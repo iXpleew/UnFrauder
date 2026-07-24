@@ -2,7 +2,8 @@ import pandas as pd
 
 
 def print_sample_data():
-    data_set = pd.read_csv("data/raw/train_transaction.csv")
+    data_set = pd.read_csv("data/train/train_transaction.csv")
+    pd.set_option("display.max_columns", None)
     print(data_set.head(10))
 
 
