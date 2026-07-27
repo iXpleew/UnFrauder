@@ -1,10 +1,12 @@
 import pandas as pd
 
-def check_all_values(dset: pd.Series):
-    print(dset.value_counts())
 
-def print_sample_data():
-    data_set = pd.read_csv("data/train/train_transaction.csv")
+def check_all_values(dseries: pd.Series):
+    print(f"{dseries.name} values: ")
+    print(dseries.value_counts())
+
+
+def print_sample_data(data_set: pd.DataFrame):
     pd.set_option("display.max_columns", None)
     print(data_set.head(10))
 
@@ -12,9 +14,16 @@ def print_sample_data():
 def main():
     data_set = pd.read_csv("data/train/train_transaction.csv")
     pd.set_option("display.max_columns", None)
-    
-    print("Is fraud:")
-    check_all_values(data_set["isFraud"])
+
+    print_sample_data(data_set)
+
+
+    for name, column in data_set.items():
+        if name == "V1":
+            break
+        if name == "TransactionID" or name == "TransactionDT":
+            continue
+        check_all_values(column)
 
 
 if __name__ == "__main__":
