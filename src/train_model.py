@@ -1,5 +1,6 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+import numpy as np
+from ydata_profiling import ProfileReport
 
 
 def check_all_values(dseries: pd.Series):
