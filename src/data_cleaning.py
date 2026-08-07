@@ -8,6 +8,10 @@ def main():
     records_number = 0
 
     for chunk in data_set:
+        print(chunk["TransactionDT"][100])
+        new_set = chunk.sort_values(by=["TransactionDT"])
+        print(new_set["TransactionDT"][100])
+        break
         records_number += chunk.shape[0]
         how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
     
