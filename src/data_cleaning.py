@@ -2,10 +2,9 @@ import pandas as pd
 
 
 def main():
-    data_set = pd.read_csv("data/train/train_transaction.csv")
-    pd.set_option("display.max_columns", None)
-    pd.set_option("display.max_rows", None)
-
+    data_set = pd.read_csv("data/train/train_transaction.csv", chunksize=5000)
+    for chunk in data_set:
+        pass    
     print(data_set.min())
     print(data_set.max())
 
