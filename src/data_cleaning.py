@@ -7,7 +7,10 @@ import numpy as np
 # no rows is 590540
 
 
-def split_dataset(data_set: pd.DataFrame):
+def split_dataset(data_set: pd.DataFrame, no_rows: int):
+    # split is 70/15/15
+    validate_index: int = int(no_rows * 70/100)
+    test_index: int = int(no_rows * 85/100)
     pass
 
 
@@ -25,8 +28,10 @@ def number_of_rows(data_set: pd.DataFrame):
 
 
 def main():
-    data_set_itr = pd.read_csv("data/train/train_transaction.csv", chunksize=5_000)
+    data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
     print(number_of_rows(data_set_itr))
+
+    # no rows: 590540
 
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
