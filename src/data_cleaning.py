@@ -7,11 +7,20 @@ import numpy as np
 # no rows is 590540
 
 
-def split_dataset(data_set: pd.DataFrame, no_rows: int):
+def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     # split is 70/15/15
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
-    pass
+    rows_counter: int = 0
+
+    for chunk in dataset_itr:
+        if rows_counter >= test_index:
+            pass
+        elif rows_counter >= validate_index:
+            train_set: pd
+            pass
+
+        rows_counter += chunk.shape[0]
 
 
 def number_of_rows(data_set: pd.DataFrame):
@@ -29,7 +38,7 @@ def number_of_rows(data_set: pd.DataFrame):
 
 def main():
     data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    print(number_of_rows(data_set_itr))
+    # print(number_of_rows(data_set_itr))
 
     # no rows: 590540
 
