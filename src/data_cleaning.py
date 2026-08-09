@@ -13,7 +13,7 @@ def prepare_file(file_path: str):
         os.remove(file_path)
     
     header = pd.read_csv("data/kaggle_dataset/train_transaction.csv", nrows=0)
-    header.to_csv(file_path, header=True)
+    header.to_csv(file_path, header=True, index=False)
 
 
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
@@ -52,6 +52,7 @@ def number_of_rows(data_set: pd.DataFrame):
 
 def main():
     data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
+    split_dataset(data_set_itr, 590_540)
     # print(number_of_rows(data_set_itr))
 
     # no rows: 590540
