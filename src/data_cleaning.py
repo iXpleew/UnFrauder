@@ -16,7 +16,10 @@ def delete_file(file_path: str):
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     # split is 70/15/15
 
-
+    delete_file("data/testdataset/test.csv")
+    delete_file("data/validatedataset/validate.csv")
+    delete_file("data/traindataset/train.csv")
+    
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
     rows_counter: int = 0
