@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 # COMMENTS FOR FUTURE
 # data set is sortd, now it's time for splitting data set
@@ -7,20 +8,27 @@ import numpy as np
 # no rows is 590540
 
 
+def delete_file(file_path: str):
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+
+
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     # split is 70/15/15
+
+
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
     rows_counter: int = 0
 
     for chunk in dataset_itr:
+        rows_counter += chunk.shape[0]
         if rows_counter >= test_index:
             pass
         elif rows_counter >= validate_index:
             train_set: pd
             pass
 
-        rows_counter += chunk.shape[0]
 
 
 def number_of_rows(data_set: pd.DataFrame):

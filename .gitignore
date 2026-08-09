@@ -1,4 +1,7 @@
 data/raw
 data/test
 data/kaggle_dataset
+data/testdataset
+data/traindataset
+data/validatedataset
 .vscode
