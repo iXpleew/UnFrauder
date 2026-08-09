@@ -8,17 +8,20 @@ import os
 # no rows is 590540
 
 
-def delete_file(file_path: str):
+def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
+    
+    header = pd.read_csv("data/kaggle_dataset/train_transaction.csv", nrows=0)
+    header.to_csv(file_path, header=False)
 
 
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     # split is 70/15/15
 
-    delete_file("data/testdataset/test.csv")
-    delete_file("data/validatedataset/validate.csv")
-    delete_file("data/traindataset/train.csv")
+    prepare_file("data/testdataset/test.csv")
+    prepare_file("data/validatedataset/validate.csv")
+    prepare_file("data/traindataset/train.csv")
 
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
@@ -27,12 +30,11 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     for chunk in dataset_itr:
         rows_counter += chunk.shape[0]
         if rows_counter >= test_index:
-            chunk.to_csv("data/testdataset/test.csv", mode="a")
+            chunk.to_csv("data/testdataset/test.csv", mode="a", header="False")
         elif rows_counter >= validate_index:
-            chunk.to_csv("data/validatedataset/validate.csv", mode="a")
+            chunk.to_csv("data/validatedataset/validate.csv", mode="a", header="False")
         else:
-            chunk.to_csv("data/traindataset/train.csv", mode="a")
-
+            chunk.to_csv("data/traindataset/train.csv", mode="a", header="False")
 
 
 def number_of_rows(data_set: pd.DataFrame):
