@@ -19,7 +19,7 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     delete_file("data/testdataset/test.csv")
     delete_file("data/validatedataset/validate.csv")
     delete_file("data/traindataset/train.csv")
-    
+
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
     rows_counter: int = 0
@@ -27,10 +27,11 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     for chunk in dataset_itr:
         rows_counter += chunk.shape[0]
         if rows_counter >= test_index:
-            pass
+            chunk.to_csv("data/testdataset/test.csv", mode="a")
         elif rows_counter >= validate_index:
-            train_set: pd
-            pass
+            chunk.to_csv("data/validatedataset/validate.csv", mode="a")
+        else:
+            chunk.to_csv("data/traindataset/train.csv", mode="a")
 
 
 
