@@ -13,7 +13,7 @@ def prepare_file(file_path: str):
         os.remove(file_path)
     
     header = pd.read_csv("data/kaggle_dataset/train_transaction.csv", nrows=0)
-    header.to_csv(file_path, header=False)
+    header.to_csv(file_path, header=True)
 
 
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
@@ -30,11 +30,11 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     for chunk in dataset_itr:
         rows_counter += chunk.shape[0]
         if rows_counter >= test_index:
-            chunk.to_csv("data/testdataset/test.csv", mode="a", header="False")
+            chunk.to_csv("data/testdataset/test.csv", mode="a", header=False, index=False)
         elif rows_counter >= validate_index:
-            chunk.to_csv("data/validatedataset/validate.csv", mode="a", header="False")
+            chunk.to_csv("data/validatedataset/validate.csv", mode="a", header=False, index=False)
         else:
-            chunk.to_csv("data/traindataset/train.csv", mode="a", header="False")
+            chunk.to_csv("data/traindataset/train.csv", mode="a", header=False, index=False)
 
 
 def number_of_rows(data_set: pd.DataFrame):
