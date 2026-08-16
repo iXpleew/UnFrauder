@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # COMMENTS FOR FUTURE
-# data set is sortd, now it's time for splitting data set
+# dataaet is splitted now it's time for checking the values 
 # commented code is meant for future methods that will be needed in analysis chapter
 # no rows is 590540
 
@@ -50,12 +50,11 @@ def number_of_rows(data_set: pd.DataFrame):
     return records_number
 
 
+
 def main():
     data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    split_dataset(data_set_itr, 590_540)
-    # print(number_of_rows(data_set_itr))
-
-    # no rows: 590540
+    #split_dataset(data_set_itr, 590_540)
+    
 
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
