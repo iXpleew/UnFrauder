@@ -54,7 +54,7 @@ def number_of_rows(data_set: pd.DataFrame):
 def main():
     data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
     #split_dataset(data_set_itr, 590_540)
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv")
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1_000)
     number_of_rows(train_dataset_itr)
 
     
