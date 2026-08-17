@@ -6,6 +6,7 @@ import os
 # dataaet is splitted now it's time for checking the values 
 # commented code is meant for future methods that will be needed in analysis chapter
 # no rows is 590540
+# no rows train - 410000
 
 
 def prepare_file(file_path: str):
@@ -50,12 +51,18 @@ def number_of_rows(data_set: pd.DataFrame):
     return records_number
 
 
+def delete_unimportant_columns(data_set: pd.DataFrame):
+    for chunk in data_set:
+        how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
+        print(how_many_nans)
+        break
+
 
 def main():
-    data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
+    #data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
     #split_dataset(data_set_itr, 590_540)
     train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1_000)
-    number_of_rows(train_dataset_itr)
+    delete_unimportant_columns(train_dataset_itr)
 
     
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
