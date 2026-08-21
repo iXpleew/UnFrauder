@@ -51,7 +51,7 @@ def number_of_rows(data_set: pd.DataFrame):
     return records_number
 
 
-def delete_unimportant_columns(data_set: pd.DataFrame):
+def show_nans_everycolumn(data_set: pd.DataFrame):
     pd.set_option("display.max_columns", None)
     how_many_nans = pd.DataFrame()
     for chunk in data_set:
@@ -63,11 +63,16 @@ def delete_unimportant_columns(data_set: pd.DataFrame):
     print(how_many_nans)
 
 
+def show_variety_everycolumn(data_set: pd.DataFrame):
+    pd.set_option("display.max_columns", None)
+    how_many_uniques = data_set.value_counts().groupby(data_set["isFraud"])
+
+
 def main():
     #data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
     #split_dataset(data_set_itr, 590_540)
     train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1_000)
-    delete_unimportant_columns(train_dataset_itr)
+    show_nans_everycolumn(train_dataset_itr)
 
     
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
