@@ -3,9 +3,10 @@ import numpy as np
 import os
 
 # COMMENTS FOR FUTURE
-# data set is sortd, now it's time for splitting data set
+# dataaet is splitted now it's time for checking the values 
 # commented code is meant for future methods that will be needed in analysis chapter
 # no rows is 590540
+# no rows train - 410000
 
 
 def prepare_file(file_path: str):
@@ -50,13 +51,33 @@ def number_of_rows(data_set: pd.DataFrame):
     return records_number
 
 
+def show_nans_everycolumn(data_set: pd.DataFrame):
+    pd.set_option("display.max_columns", None)
+    how_many_nans = pd.DataFrame()
+    for chunk in data_set:
+        if how_many_nans.empty:
+            how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
+        else:
+            how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
+        
+    print(how_many_nans)
+
+
+def show_uniques_everycolumn(data_set: pd.DataFrame):
+    for column_name in data_set:
+        if column_name == "V1":
+            break
+        print(data_set[column_name].value_counts())
+        print()
+
+
 def main():
-    data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    split_dataset(data_set_itr, 590_540)
-    # print(number_of_rows(data_set_itr))
+    #data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
+    #split_dataset(data_set_itr, 590_540)
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv")
+    show_uniques_everycolumn(train_dataset_itr)
 
-    # no rows: 590540
-
+    
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
     #print(diff_vector)
