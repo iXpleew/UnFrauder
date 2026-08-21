@@ -63,16 +63,19 @@ def show_nans_everycolumn(data_set: pd.DataFrame):
     print(how_many_nans)
 
 
-def show_variety_everycolumn(data_set: pd.DataFrame):
-    pd.set_option("display.max_columns", None)
-    how_many_uniques = data_set.value_counts().groupby(data_set["isFraud"])
+def show_uniques_everycolumn(data_set: pd.DataFrame):
+    for column_name in data_set:
+        if column_name == "V1":
+            break
+        print(data_set[column_name].value_counts())
+        print()
 
 
 def main():
     #data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
     #split_dataset(data_set_itr, 590_540)
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1_000)
-    show_nans_everycolumn(train_dataset_itr)
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv")
+    show_uniques_everycolumn(train_dataset_itr)
 
     
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
