@@ -52,10 +52,15 @@ def number_of_rows(data_set: pd.DataFrame):
 
 
 def delete_unimportant_columns(data_set: pd.DataFrame):
+    pd.set_option("display.max_columns", None)
+    how_many_nans = pd.DataFrame()
     for chunk in data_set:
-        how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
-        print(how_many_nans)
-        break
+        if how_many_nans.empty:
+            how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
+        else:
+            how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
+        
+    print(how_many_nans)
 
 
 def main():
