@@ -3,7 +3,6 @@ import numpy as np
 import os
 
 # COMMENTS FOR FUTURE
-# dataaet is splitted now it's time for checking the values 
 # commented code is meant for future methods that will be needed in analysis chapter
 # no rows is 590540
 # no rows train - 410000
@@ -63,6 +62,17 @@ def show_nans_everycolumn(data_set: pd.DataFrame):
     print(how_many_nans)
 
 
+def show_nans_impact_fraud(data_set: pd.DataFrame):
+    all_missing_values = pd.DataFrame
+    for chunk in data_set:
+        chunk_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
+        if all_missing_values.empty:
+            all_missing_values = chunk_nans
+        else:
+            all_missing_values += chunk_nans
+    print(all_missing_values)
+
+
 def show_uniques_everycolumn(data_set: pd.DataFrame):
     for column_name in data_set:
         if column_name == "V1":
@@ -72,12 +82,9 @@ def show_uniques_everycolumn(data_set: pd.DataFrame):
 
 
 def main():
-    #data_set_itr = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    #split_dataset(data_set_itr, 590_540)
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv")
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
     show_uniques_everycolumn(train_dataset_itr)
 
-    
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
     #print(diff_vector)
