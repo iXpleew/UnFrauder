@@ -67,7 +67,7 @@ def show_uniques_everycolumn(data_set: pd.DataFrame):
     for column_name in data_set:
         if column_name == "V1":
             break
-        print(data_set[column_name].value_counts())
+        print(data_set[column_name].groupby(data_set["isFraud"]).value_counts())
         print()
 
 
