@@ -75,10 +75,12 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
 
 def show_uniques_everycolumn():
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
+    frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
     for column_name in column_names:
         column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
-        print(column)
-        break
+        #uniq_values = column + frauds_column
+        print(type(column))
+        
     
 
 
