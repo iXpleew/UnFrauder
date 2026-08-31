@@ -73,17 +73,18 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
     print(all_missing_values)
 
 
-def show_uniques_everycolumn(data_set: pd.DataFrame):
-    for column_name in data_set:
-        if column_name == "V1":
-            break
-        print(data_set[column_name].groupby(data_set["isFraud"]).value_counts())
-        print()
+def show_uniques_everycolumn():
+    column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
+    for column_name in column_names:
+        column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
+        print(column)
+        break
+    
 
 
 def main():
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
-    show_uniques_everycolumn(train_dataset_itr)
+    # train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
+    show_uniques_everycolumn()
 
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
