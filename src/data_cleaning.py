@@ -85,6 +85,16 @@ def show_uniques_everycolumn():
         print(based_uniqes)
 
 
+def show_nans_everycolumn():
+    column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
+    frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
+    for column_name in column_names:
+        if column_name == "isFraud":
+            continue
+        column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
+        column_with_fraud = pd.concat([frauds_column, column], axis=1)
+        
+
 def main():
     # train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
     show_uniques_everycolumn()
