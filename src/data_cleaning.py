@@ -77,11 +77,12 @@ def show_uniques_everycolumn():
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
     frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
     for column_name in column_names:
+        if column_name == "isFraud":
+            continue
         column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
-        #uniq_values = column + frauds_column
-        print(type(column))
-        
-    
+        uniq_values = pd.concat([column, frauds_column], axis=1)
+        based_uniqes = uniq_values.groupby(by=uniq_values["isFraud"]).value_counts()
+        print(based_uniqes)
 
 
 def main():
