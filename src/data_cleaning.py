@@ -93,11 +93,13 @@ def show_nans_everycolumn():
             continue
         column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
         column_with_fraud = pd.concat([frauds_column, column], axis=1)
+        based_uniqes = uniq_values.groupby(by=uniq_values["isFraud"]).value_counts()
+        print(based_uniqes)
         
 
 def main():
     # train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
-    show_uniques_everycolumn()
+    show_nans_everycolumn()
 
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
