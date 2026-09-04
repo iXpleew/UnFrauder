@@ -6,6 +6,7 @@ import os
 # commented code is meant for future methods that will be needed in analysis chapter
 # no rows is 590540
 # no rows train - 410000
+# no rows train fraud - 14393 
 
 
 def prepare_file(file_path: str):
@@ -50,6 +51,13 @@ def number_of_rows(data_set: pd.DataFrame):
     return records_number
 
 
+def return_non_fraud_amount(dataset: pd.DataFrame):
+    frauds_number: int = 0
+    for chunk in dataset:
+        frauds_number += chunk["isFraud"].sum()
+    return frauds_number
+
+
 def show_nans_everycolumn(data_set: pd.DataFrame):
     pd.set_option("display.max_columns", None)
     how_many_nans = pd.DataFrame()
@@ -58,7 +66,7 @@ def show_nans_everycolumn(data_set: pd.DataFrame):
             how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
         else:
             how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
-        
+    #percent_fraud = how_many_nans.iloc[0] / 
     print(how_many_nans)
 
 
@@ -85,7 +93,7 @@ def show_uniques_everycolumn():
         print(based_uniqes)
 
 
-def show_nans_everycolumn():
+def show_nans_everycolumnkk():
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
     frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
     for column_name in column_names:
@@ -94,13 +102,17 @@ def show_nans_everycolumn():
         column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
         column_with_fraud = pd.concat([frauds_column, column], axis=1)
         based_uniqes = column_with_fraud.isna().groupby(by=column_with_fraud["isFraud"]).sum()
-        print(based_uniqes)
-        
+        # print(based_uniqes)
+
+
+def modify_train_set():
+    pass
+
 
 def main():
-    # train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
-    show_nans_everycolumn()
-
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
+    #show_nans_everycolumn(train_dataset_itr)
+    print(return_non_fraud_amount(train_dataset_itr))
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
     #print(diff_vector)
