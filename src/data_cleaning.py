@@ -66,8 +66,10 @@ def show_nans_everycolumn(data_set: pd.DataFrame):
             how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
         else:
             how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
-    #percent_fraud = how_many_nans.iloc[0] / 
-    print(how_many_nans)
+    percent_notfraud = (how_many_nans.iloc[0] / 14393) * 100
+    percent_fraud = (how_many_nans.iloc[1] / (410000 - 14393)) * 100
+    print(f"Percentage of nans fraud: ")
+    print(percent_fraud)
 
 
 def show_nans_impact_fraud(data_set: pd.DataFrame):
@@ -111,8 +113,7 @@ def modify_train_set():
 
 def main():
     train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
-    #show_nans_everycolumn(train_dataset_itr)
-    print(return_non_fraud_amount(train_dataset_itr))
+    show_nans_everycolumn(train_dataset_itr)
     # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
     #diff_vector = missing_values.loc[1] - missing_values.loc[0]
     #print(diff_vector)
