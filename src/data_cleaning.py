@@ -59,18 +59,23 @@ def return_non_fraud_amount(dataset: pd.DataFrame):
 
 
 def show_nans_everycolumn(data_set: pd.DataFrame):
-    pd.set_option("display.max_columns", None)
+    pd.set_option("display.max_columns", None, "display.max_rows", None)
     how_many_nans = pd.DataFrame()
     for chunk in data_set:
         if how_many_nans.empty:
             how_many_nans = chunk.isna().groupby(chunk["isFraud"]).sum()
         else:
             how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
-    percent_notfraud = (how_many_nans.iloc[0] / 14393) * 100
-    percent_fraud = (how_many_nans.iloc[1] / (410000 - 14393)) * 100
-    print(f"Percentage of nans fraud: ")
-    print(percent_fraud)
-
+    percent_notfraud = (how_many_nans.iloc[0] / (410000 - 14393)) * 100
+    percent_fraud = (how_many_nans.iloc[1] / 14393) * 100
+    #print(f"Percentage of nans fraud: ")
+    #print(percent_fraud)
+    #print()
+    #print("Percentage of nans not Fraud: ")
+    #print(percent_notfraud)
+    percent_fraud.index = percent_notfraud.index
+    percent_nans = pd.concat([percent_fraud, percent_notfraud], axis=1)
+    print(percent_nans)
 
 def show_nans_impact_fraud(data_set: pd.DataFrame):
     all_missing_values = pd.DataFrame
