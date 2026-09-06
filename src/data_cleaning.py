@@ -123,7 +123,7 @@ def move_column_toend(dataset: pd.DataFrame):
         for chunk in dataset:
             newset = chunk
             column_to_move = newset.pop("isFraud")
-            newset.insert(-1, "isFraud", column_to_move)
+            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
             columns = list(newset.columns.values)
             file.write('\t'.join(columns) + '\n')
             break
@@ -131,17 +131,21 @@ def move_column_toend(dataset: pd.DataFrame):
         for chunk in dataset:
             newset = chunk
             column_to_move = newset.pop("isFraud")
-            dataset.insert(-1, "isFraud", column_to_move)
+            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
             newset.to_csv(file, header=None, sep='\t')
 
 
 
 def main():
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
     #show_nans_everycolumn(train_dataset_itr)
     #show_uniques_everycolumn()
-    pd.set_option("display.max_columns", None)
-    for chunk in train_dataset_itr:
+    #pd.set_option("display.max_columns", None)
+
+    #move_column_toend(train_dataset_itr)
+    newset = pd.read_csv("data/traindataset/train1.csv", chunksize=1000)
+    for chunk in newset:
+        print(chunk.head())
         break
 
 
