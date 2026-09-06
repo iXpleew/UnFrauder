@@ -68,14 +68,11 @@ def show_nans_everycolumn(data_set: pd.DataFrame):
             how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
     percent_notfraud = (how_many_nans.iloc[0] / (410000 - 14393)) * 100
     percent_fraud = (how_many_nans.iloc[1] / 14393) * 100
-    #print(f"Percentage of nans fraud: ")
-    #print(percent_fraud)
-    #print()
-    #print("Percentage of nans not Fraud: ")
-    #print(percent_notfraud)
+
     percent_fraud.index = percent_notfraud.index
     percent_nans = pd.concat([percent_fraud, percent_notfraud], axis=1)
     print(percent_nans)
+
 
 def show_nans_impact_fraud(data_set: pd.DataFrame):
     all_missing_values = pd.DataFrame
@@ -89,10 +86,19 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
 
 
 def show_uniques_everycolumn():
+    pd.set_option("display.max_rows", None)
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
     frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
+    skip: bool = True
+
     for column_name in column_names:
-        if column_name == "isFraud":
+        if column_name == "V339":
+            skip = False
+        elif skip:
+            continue
+
+
+        if column_name == "isFraud" or column_name == "TransactionID" or column_name == "TransacitionDT":
             continue
         column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
         uniq_values = pd.concat([column, frauds_column], axis=1)
@@ -112,16 +118,35 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def modify_train_set():
-    pass
+def move_column_toend(dataset: pd.DataFrame):
+    with open("data/traindataset/train1.csv", mode="w") as file:
+        for chunk in dataset:
+            newset = chunk
+            column_to_move = newset.pop("isFraud")
+            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
+            columns = list(newset.columns.values)
+            file.write('\t'.join(columns) + '\n')
+            break
+
+        for chunk in dataset:
+            newset = chunk
+            column_to_move = newset.pop("isFraud")
+            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
+            newset.to_csv(file, header=None, sep='\t')
+
 
 
 def main():
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
-    show_nans_everycolumn(train_dataset_itr)
-    # missing_values = data_set.isna().groupby(data_set["isFraud"]).mean()
-    #diff_vector = missing_values.loc[1] - missing_values.loc[0]
-    #print(diff_vector)
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
+    #show_nans_everycolumn(train_dataset_itr)
+    #show_uniques_everycolumn()
+    #pd.set_option("display.max_columns", None)
+
+    #move_column_toend(train_dataset_itr)
+    newset = pd.read_csv("data/traindataset/train1.csv", chunksize=1000)
+    for chunk in newset:
+        print(chunk.head())
+        break
 
 
 if __name__ == "__main__":
