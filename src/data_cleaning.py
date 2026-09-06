@@ -118,14 +118,21 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def modify_train_set():
-    pass
-
+def move_column_toend(dataset: pd.DataFrame):
+    column_to_move = dataset.pop("isFraud")
+    dataset.insert(-1, "isFraud", column_to_move)
+    return dataset
 
 def main():
     train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=1000)
     #show_nans_everycolumn(train_dataset_itr)
-    show_uniques_everycolumn()
+    #show_uniques_everycolumn()
+    pd.set_option("display.max_columns", None)
+    train_dataset_itr = move_column_toend(train_dataset_itr)
+    for chunk in train_dataset_itr:
+        print(chunk.head())
+        break
+
 
 if __name__ == "__main__":
     main()
