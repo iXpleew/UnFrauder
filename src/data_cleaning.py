@@ -121,18 +121,19 @@ def show_nans_everycolumnkk():
 def move_column_toend(dataset: pd.DataFrame):
     with open("data/traindataset/train1.csv", mode="w") as file:
         for chunk in dataset:
-            newset = chunk
+            newset = chunk.copy()
             column_to_move = newset.pop("isFraud")
+            print(chunk)
             newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
-            columns = list(newset.columns.values)
-            file.write('\t'.join(columns) + '\n')
+            print(newset)
+            newset.to_csv(file, index=False)
             break
 
-        for chunk in dataset:
-            newset = chunk
-            column_to_move = newset.pop("isFraud")
-            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
-            newset.to_csv(file, header=None, sep='\t')
+        #for chunk in dataset:
+            #newset = chunk
+            #column_to_move = newset.pop("isFraud")
+            #newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
+            #newset.to_csv(file, header=None, mode="a")
 
 
 
@@ -142,7 +143,7 @@ def main():
     #show_uniques_everycolumn()
     #pd.set_option("display.max_columns", None)
 
-    #move_column_toend(train_dataset_itr)
+    move_column_toend(train_dataset_itr)
     newset = pd.read_csv("data/traindataset/train1.csv", chunksize=1000)
     for chunk in newset:
         print(chunk.head())
