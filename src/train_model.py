@@ -19,6 +19,20 @@ def build_dtypes():
 
         if series.dtype == "object":
             dtype_dict[column] = "category"
+        elif pd.api.types.is_float_dtype(series):
+            dtype_dict[column] = "float32"
+        elif pd.api.types.is_integer_dtype(series):
+            col_min, col_max = series.min(), series.max()
+            if col_min >= np.iinfo(np.int8).min and col_max <= np.iinfo(np.int8).max:
+                dtype_dict[column] = "int8"
+            elif col_min >= np.iinfo(np.int16).min and col_max <= np.iinfo(np.int16).max:
+                dtype_dict[column] = "int16"
+            elif col_min >= np.iinfo(np.int32).min and col_max <= np.iinfo(np.int32).max:
+                dtype_dict[column] = "int32"
+            else:
+                dtype_dict[column] = "int64"
+    return dtype_dict
+
 
 def main():
     trainset = pd.read_csv(FILE_PATH, nrows=2)  
