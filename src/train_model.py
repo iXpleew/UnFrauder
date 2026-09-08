@@ -1,4 +1,5 @@
 import pandas as pd
+import pdcast as pdc
 import numpy as np
 import xgboost as xgb
 
@@ -9,6 +10,7 @@ def set_model_option():
 
 def main():
     col_set = pd.read_csv("data/traindataset/train1.csv",nrows=0).columns.to_list()
+
     train_set = pd.read_csv("data/traindataset/train1.csv", dtype=dtypes_dict)
     set_model_option()  
 
