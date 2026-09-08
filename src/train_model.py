@@ -8,8 +8,10 @@ def set_model_option():
 
 
 def main():
-    train_set = pd.read_csv("data/train/train_transaction.csv")
-    pd.set_option("display.max_columns", None)
+    col_set = pd.read_csv("data/traindataset/train1.csv",nrows=0).columns.to_list()
+    train_set = pd.read_csv("data/traindataset/train1.csv", dtype=dtypes_dict)
+    set_model_option()  
+
 
 
 if __name__ == "__main__":
