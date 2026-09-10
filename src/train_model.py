@@ -7,7 +7,10 @@ FILE_PATH = "data/traindataset/train1.csv"
 
 def set_model_option():
     pd.set_option("display.max_columns", None)
-    param["eval_metric"] = "auc"
+    param = {"eval_metric": "auc"}
+    return param
+
+
 
 def build_dtypes():
     column_names = pd.read_csv(FILE_PATH, nrows=0).columns.to_list()
