@@ -29,6 +29,8 @@ def build_dtypes():
                 dtype_dict[column] = "float32"
                 continue
             elif pd.api.types.is_integer_dtype(series):
+                if dtype_dict.get(column) == "float32":
+                    continue
                 chunk_min = series.min()
                 chunk_max = series.max()
 
@@ -36,6 +38,8 @@ def build_dtypes():
                 global_maxs[column] = max(global_maxs.get(column, float('-inf')), chunk_max)
 
     for column, col_min in global_mins.items():
+        if dtype_dict.get(column) == "float32":
+            continue
         col_max = global_maxs[column]
 
         if col_min >= np.iinfo(np.int8).min and col_max <= np.iinfo(np.int8).max:
