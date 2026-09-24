@@ -156,10 +156,18 @@ def main():
     #move_column_toend(train_dataset_itr)
     newset = pd.read_csv("data/traindataset/train1.csv", chunksize=9999)
     #print(len(newset.index))
+    
+    save_series_from_iterator(newset)
+    goalset = pd.read_csv("data/traindataset/goal.csv", chunksize=5000)
+    counter_one: int = 0
+    for chunk in goalset:
+        counter_one += len(chunk.index)
+    print(counter_one)
+    
     counter: int = 0
-    for chunk in newset:
-        counter += len(chunk.index)
-    print(counter)
+    #for chunk in newset:
+     #   counter += len(chunk.index)
+    #print(counter)
 
 
 if __name__ == "__main__":
