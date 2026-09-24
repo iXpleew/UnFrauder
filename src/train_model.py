@@ -11,7 +11,6 @@ def set_model_option():
     return param
 
 
-
 def build_dtypes():
     column_names = pd.read_csv(FILE_PATH, nrows=0).columns.to_list()
     dtype_dict = {}
@@ -52,6 +51,7 @@ def build_dtypes():
             dtype_dict[column] = "int64"
 
     return dtype_dict
+
 
 def main():
     dtypes_dict = build_dtypes()

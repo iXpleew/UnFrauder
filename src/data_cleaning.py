@@ -118,8 +118,8 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def pop_column(dataset: pd.DataFrame):
-    with open("data/traindataset/train1.csv", mode="w") as file:
+def pop_column(dataset: pd.DataFrame, new_filepath: str):
+    with open(new_filepath, mode="w") as file:
         for chunk in dataset:
             newset = chunk.copy()
             newset.pop("isFraud")
@@ -132,8 +132,8 @@ def pop_column(dataset: pd.DataFrame):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
-def save_series_from_iterator(dataset: pd.DataFrame):
-    with open("data/traindataset/goal.csv", mode="w") as file:
+def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
+    with open(new_filepath, mode="w") as file:
         for chunk in dataset:
             goal_column = chunk["isFraud"]        
             goal_column.to_csv(file, index=False, header=None)
@@ -141,21 +141,16 @@ def save_series_from_iterator(dataset: pd.DataFrame):
 
 def main():
     #train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
-    #show_nans_everycolumn(train_dataset_itr)
-    #show_uniques_everycolumn()
     #pd.set_option("display.max_columns", None)
 
     #move_column_toend(train_dataset_itr)
-    newset = pd.read_csv("data/traindataset/train1.csv", chunksize=9999)
+    #newset = pd.read_csv("data/traindataset/train1.csv", chunksize=9999)
     #print(len(newset.index))
     
-    save_series_from_iterator(newset)
     
-    goalset = pd.read_csv("data/traindataset/goal.csv", chunksize=5000)
-    counter_one: int = 0
-    for chunk in goalset:
-        counter_one += len(chunk.index)
-    print(counter_one)
+    validate_dataset_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
+    pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
+    save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
 
 
 if __name__ == "__main__":
