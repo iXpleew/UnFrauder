@@ -134,6 +134,11 @@ def move_column_toend(dataset: pd.DataFrame):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
+def extract_goal_series(goals: pd.Series):
+    with open("data/traindataset/goal.csv", mode="w") as file:
+        for chunk in goals:
+            chunk.to_csv(file, header=None, index=None, mode="a")
+
 def main():
     #train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
     #show_nans_everycolumn(train_dataset_itr)
