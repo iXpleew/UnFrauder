@@ -7,7 +7,10 @@ FILE_PATH = "data/traindataset/train1.csv"
 
 def set_model_option():
     pd.set_option("display.max_columns", None)
-    param["eval_metric"] = "auc"
+    param = {"eval_metric": "auc"}
+    return param
+
+
 
 def build_dtypes():
     column_names = pd.read_csv(FILE_PATH, nrows=0).columns.to_list()
@@ -26,6 +29,8 @@ def build_dtypes():
                 dtype_dict[column] = "float32"
                 continue
             elif pd.api.types.is_integer_dtype(series):
+                if dtype_dict.get(column) == "float32":
+                    continue
                 chunk_min = series.min()
                 chunk_max = series.max()
 
@@ -33,6 +38,8 @@ def build_dtypes():
                 global_maxs[column] = max(global_maxs.get(column, float('-inf')), chunk_max)
 
     for column, col_min in global_mins.items():
+        if dtype_dict.get(column) == "float32":
+            continue
         col_max = global_maxs[column]
 
         if col_min >= np.iinfo(np.int8).min and col_max <= np.iinfo(np.int8).max:

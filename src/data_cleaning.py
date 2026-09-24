@@ -134,6 +134,19 @@ def move_column_toend(dataset: pd.DataFrame):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
+def save_series_from_iterator(dataset: pd.DataFrame):
+    with open("data/traindataset/goal.csv", mode="w") as file:
+        for chunk in dataset:
+            goal_column = chunk["isFraud"]        
+            goal_column.to_csv(file, index=False, header=None)
+
+
+def extract_goal_series(goals: pd.Series):
+    with open("data/traindataset/goal.csv", mode="w") as file:
+        for chunk in goals:
+            chunk.to_csv(file, header=None, index=False, mode="a")
+
+
 def main():
     #train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
     #show_nans_everycolumn(train_dataset_itr)
