@@ -118,19 +118,17 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def move_column_toend(dataset: pd.DataFrame):
+def pop_column(dataset: pd.DataFrame):
     with open("data/traindataset/train1.csv", mode="w") as file:
         for chunk in dataset:
             newset = chunk.copy()
-            column_to_move = newset.pop("isFraud")
-            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
+            newset.pop("isFraud")
             newset.to_csv(file, index=False)
             break
 
         for chunk in dataset:
             newset = chunk.copy()
-            column_to_move = newset.pop("isFraud")
-            newset.insert(len(list(newset.columns.values)), "isFraud", column_to_move)
+            newset.pop("isFraud")
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
@@ -139,12 +137,6 @@ def save_series_from_iterator(dataset: pd.DataFrame):
         for chunk in dataset:
             goal_column = chunk["isFraud"]        
             goal_column.to_csv(file, index=False, header=None)
-
-
-def extract_goal_series(goals: pd.Series):
-    with open("data/traindataset/goal.csv", mode="w") as file:
-        for chunk in goals:
-            chunk.to_csv(file, header=None, index=False, mode="a")
 
 
 def main():
@@ -158,16 +150,12 @@ def main():
     #print(len(newset.index))
     
     save_series_from_iterator(newset)
+    
     goalset = pd.read_csv("data/traindataset/goal.csv", chunksize=5000)
     counter_one: int = 0
     for chunk in goalset:
         counter_one += len(chunk.index)
     print(counter_one)
-    
-    counter: int = 0
-    #for chunk in newset:
-     #   counter += len(chunk.index)
-    #print(counter)
 
 
 if __name__ == "__main__":
