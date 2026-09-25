@@ -1,9 +1,13 @@
 import pandas as pd
 import pdcast as pdc
 import numpy as np
-import xgboost as xgb
+from xgboost import XGBClassifier
 
-FILE_PATH = "data/traindataset/train1.csv"
+FILE_PATH_TRAINX = "data/traindataset/train1.csv"
+FILE_PATH_TRAINY = "data/traindataset/goal.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/validate1.csv"
+FILE_PATH_VALIDATEY = "data/validatedataset/goals_val.csv"
+
 
 def set_model_option():
     pd.set_option("display.max_columns", None)
@@ -11,13 +15,13 @@ def set_model_option():
     return param
 
 
-def build_dtypes():
-    column_names = pd.read_csv(FILE_PATH, nrows=0).columns.to_list()
+def build_dtypes(file_path: str):
+    column_names = pd.read_csv(file_path, nrows=0).columns.to_list()
     dtype_dict = {}
     global_mins = {}
     global_maxs = {}
 
-    for chunk in pd.read_csv(FILE_PATH, chunksize=5_000):
+    for chunk in pd.read_csv(file_path, chunksize=5_000):
         for column in column_names:
             series = chunk[column]
 
@@ -53,11 +57,26 @@ def build_dtypes():
     return dtype_dict
 
 
-def main():
-    dtypes_dict = build_dtypes()
-    trainset = pd.read_csv(FILE_PATH, dtype=dtypes_dict)
+def create_light_sets():
+    dtypes_dict = build_dtypes(FILE_PATH_TRAINX)
+    trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
+    validatesetX = pd.read_csv(FILE_PATH_VALIDATEX, dtype=dtypes_dict)
 
-    print(trainset.memory_usage(deep=True).sum())
+    dtypes_dict = build_dtypes(FILE_PATH_TRAINY)
+    trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
+    validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
+
+    return trainsetX, validatesetX, trainsetY, validatesetY
+
+
+def main():
+    trainX, testX, trainY, testY = create_light_sets()
+    bst = XGBClassifier()
+    bst.fit(trainX, trainY)
+    preds = bst.predict(testX)
+
+    print(preds)
+
 
 if __name__ == "__main__":
     main()
