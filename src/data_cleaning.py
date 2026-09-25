@@ -149,8 +149,8 @@ def main():
     
     
     validate_dataset_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
     save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
+    pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
 
 
 if __name__ == "__main__":

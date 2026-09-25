@@ -3,7 +3,8 @@ import pdcast as pdc
 import numpy as np
 import xgboost as xgb
 
-FILE_PATH = "data/traindataset/train1.csv"
+FILE_PATH_TRAINX = "data/traindataset/train1.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/validate1.csv"
 
 def set_model_option():
     pd.set_option("display.max_columns", None)
@@ -55,7 +56,8 @@ def build_dtypes():
 
 def main():
     dtypes_dict = build_dtypes()
-    trainset = pd.read_csv(FILE_PATH, dtype=dtypes_dict)
+    trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
+    validatesetX = pd.read_cv
 
     print(trainset.memory_usage(deep=True).sum())
 
