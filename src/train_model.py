@@ -57,7 +57,7 @@ def build_dtypes(file_path: str):
     return dtype_dict
 
 
-def main():
+def create_light_sets():
     dtypes_dict = build_dtypes(FILE_PATH_TRAINX)
     trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
     validatesetX = pd.read_csv(FILE_PATH_VALIDATEX, dtype=dtypes_dict)
@@ -65,6 +65,17 @@ def main():
     dtypes_dict = build_dtypes(FILE_PATH_TRAINY)
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
+
+    return trainsetX, validatesetX, trainsetY, validatesetY
+
+
+def main():
+    trainX, testX, trainY, testY = create_light_sets()
+    bst = XGBClassifier()
+    bst.fit(trainX, trainY)
+    preds = bst.predict(testX)
+
+    print(preds)
 
 
 if __name__ == "__main__":

@@ -134,23 +134,28 @@ def pop_column(dataset: pd.DataFrame, new_filepath: str):
 
 def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
     with open(new_filepath, mode="w") as file:
+        file.write("isFraud" + '\n')
         for chunk in dataset:
             goal_column = chunk["isFraud"]        
             goal_column.to_csv(file, index=False, header=None)
 
 
 def main():
-    #train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
-    #pd.set_option("display.max_columns", None)
-
-    #move_column_toend(train_dataset_itr)
+    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
+    #pop_column(train_dataset_itr, "data/traindataset/train1.csv")
+    
+    dataset = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
+    save_series_from_iterator(train_dataset_itr, "data/traindataset/goal.csv")
+    ys = pd.read_csv("data/traindataset/goal.csv", chunksize=5_000)
+    number_of_rows(dataset)
+    number_of_rows(ys)
     #newset = pd.read_csv("data/traindataset/train1.csv", chunksize=9999)
     #print(len(newset.index))
     
     
     validate_dataset_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    #save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
-    pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
+    save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
+    #pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
 
 
 if __name__ == "__main__":
