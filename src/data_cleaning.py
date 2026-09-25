@@ -149,7 +149,7 @@ def main():
     
     
     validate_dataset_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
+    #save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
     pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
 
 
