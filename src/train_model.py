@@ -2,6 +2,7 @@ import pandas as pd
 import pdcast as pdc
 import numpy as np
 from xgboost import XGBClassifier
+import collections
 
 FILE_PATH_TRAINX = "data/traindataset/train1.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal.csv"
@@ -69,13 +70,20 @@ def create_light_sets():
     return trainsetX, validatesetX, trainsetY, validatesetY
 
 
+def evaluate_model(predictions: np.array, real_results: np.array):
+    good_preds: int = 0
+    for i in range(len(predictions)):
+        if predictions[i] == real_results[i]:
+            good_preds += 1
+    return good_preds/len(predictions) * 100
+
 def main():
     trainX, testX, trainY, testY = create_light_sets()
     bst = XGBClassifier()
     bst.fit(trainX, trainY)
     preds = bst.predict(testX)
-
-    print(preds)
+    print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
+    
 
 
 if __name__ == "__main__":
