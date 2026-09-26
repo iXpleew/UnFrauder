@@ -1,8 +1,8 @@
 import pandas as pd
-import pdcast as pdc
 import numpy as np
 from xgboost import XGBClassifier
-import collections
+from sklearn.metrics import precision_recall_curve, auc
+
 
 FILE_PATH_TRAINX = "data/traindataset/train1.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal.csv"
@@ -71,11 +71,10 @@ def create_light_sets():
 
 
 def evaluate_model(predictions: np.array, real_results: np.array):
-    good_preds: int = 0
-    for i in range(len(predictions)):
-        if predictions[i] == real_results[i]:
-            good_preds += 1
-    return good_preds/len(predictions) * 100
+    precision, recall, thresholds = precision_recall_curve(real_results, predictions)
+    auc_score = auc(recall, precision)
+    return auc_score
+
 
 def main():
     trainX, testX, trainY, testY = create_light_sets()
