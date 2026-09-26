@@ -39,14 +39,10 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
 
 
 def number_of_rows(data_set: pd.DataFrame):
-    # how_many_nans = 0
     records_number = 0
-
     for chunk in data_set:
         records_number += chunk.shape[0]
-        # how_many_nans += chunk.isna().groupby(chunk["isFraud"]).sum()
     
-    # print(how_many_nans)
     print(records_number)
     return records_number
 
@@ -141,21 +137,23 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    train_dataset_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5000)
-    #pop_column(train_dataset_itr, "data/traindataset/train1.csv")
-    
-    dataset = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
-    save_series_from_iterator(train_dataset_itr, "data/traindataset/goal.csv")
-    ys = pd.read_csv("data/traindataset/goal.csv", chunksize=5_000)
-    number_of_rows(dataset)
-    number_of_rows(ys)
-    #newset = pd.read_csv("data/traindataset/train1.csv", chunksize=9999)
-    #print(len(newset.index))
-    
-    
-    validate_dataset_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    save_series_from_iterator(validate_dataset_itr, "data/validatedataset/goals_val.csv")
-    #pop_column(validate_dataset_itr, "data/validatedataset/validate1.csv")
+    train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
+    #save_series_from_iterator(train_itr, "data/traindataset/goal_train.csv")
+    #train_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5_000)
+    #pop_column(train_itr, "data/traindataset/train1.csv")
+
+    vali_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
+    #save_series_from_iterator(vali_itr, "data/validatedataset/goal_validate.csv")
+    #vali_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
+    #pop_column(vali_itr, "data/validatedataset/validate1.csv")
+
+    trainy = pd.read_csv("data/traindataset/goal_train.csv", chunksize=5_000)
+    validatey = pd.read_csv("data/validatedataset/goal_validate.csv", chunksize=5_000)
+
+    number_of_rows(train_itr)
+    number_of_rows(trainy)
+    number_of_rows(vali_itr)
+    number_of_rows(validatey)
 
 
 if __name__ == "__main__":

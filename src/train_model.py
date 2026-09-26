@@ -5,9 +5,9 @@ from sklearn.metrics import precision_recall_curve, auc
 
 
 FILE_PATH_TRAINX = "data/traindataset/train1.csv"
-FILE_PATH_TRAINY = "data/traindataset/goal.csv"
+FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
 FILE_PATH_VALIDATEX = "data/validatedataset/validate1.csv"
-FILE_PATH_VALIDATEY = "data/validatedataset/goals_val.csv"
+FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
 def set_model_option():
@@ -78,11 +78,10 @@ def evaluate_model(predictions: np.array, real_results: np.array):
 
 def main():
     trainX, testX, trainY, testY = create_light_sets()
-    bst = XGBClassifier()
+    bst = XGBClassifier(enable_categorical=True)
     bst.fit(trainX, trainY)
-    preds = bst.predict(testX)
+    preds = bst.predict_proba(testX)[:, 1]
     print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
-    
 
 
 if __name__ == "__main__":
