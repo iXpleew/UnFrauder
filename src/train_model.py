@@ -1,12 +1,13 @@
 import pandas as pd
-import pdcast as pdc
 import numpy as np
 from xgboost import XGBClassifier
+from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
+
 
 FILE_PATH_TRAINX = "data/traindataset/train1.csv"
-FILE_PATH_TRAINY = "data/traindataset/goal.csv"
+FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
 FILE_PATH_VALIDATEX = "data/validatedataset/validate1.csv"
-FILE_PATH_VALIDATEY = "data/validatedataset/goals_val.csv"
+FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
 def set_model_option():
@@ -69,13 +70,18 @@ def create_light_sets():
     return trainsetX, validatesetX, trainsetY, validatesetY
 
 
+def evaluate_model(predictions: np.array, real_results: np.array):
+    #precision, recall, thresholds = precision_recall_curve(real_results, predictions)
+    #auc_score = roc_auc_score(recall, precision)
+    return roc_auc_score(real_results, predictions)
+
+
 def main():
     trainX, testX, trainY, testY = create_light_sets()
-    bst = XGBClassifier()
+    bst = XGBClassifier(enable_categorical=True)
     bst.fit(trainX, trainY)
-    preds = bst.predict(testX)
-
-    print(preds)
+    preds = bst.predict_proba(testX)[:, 1]
+    print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
 
 
 if __name__ == "__main__":
