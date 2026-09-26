@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from xgboost import XGBClassifier
-from sklearn.metrics import precision_recall_curve, auc
+from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 
 FILE_PATH_TRAINX = "data/traindataset/train1.csv"
@@ -71,9 +71,9 @@ def create_light_sets():
 
 
 def evaluate_model(predictions: np.array, real_results: np.array):
-    precision, recall, thresholds = precision_recall_curve(real_results, predictions)
-    auc_score = auc(recall, precision)
-    return auc_score
+    #precision, recall, thresholds = precision_recall_curve(real_results, predictions)
+    #auc_score = roc_auc_score(recall, precision)
+    return roc_auc_score(real_results, predictions)
 
 
 def main():
