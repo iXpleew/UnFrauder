@@ -11,7 +11,6 @@ import os
 
 COLS_FOR_DELETING = ["V322", "V323", "V324", "V325", "V326", "V328", "V329", "V330", "V332", "V333", "V334", "V335", "V338", "V339"]
 
-
 def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
@@ -117,18 +116,27 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def pop_column(dataset: pd.DataFrame, new_filepath: str, column_name: str = "isFraud"):
+def pop_column(dataset: pd.DataFrame, new_filepath: str):
     with open(new_filepath, mode="w") as file:
         for chunk in dataset:
             newset = chunk.copy()
-            newset.pop(column_name)
+            newset.pop("isFraud")
             newset.to_csv(file, index=False)
             break
 
         for chunk in dataset:
             newset = chunk.copy()
-            newset.pop(column_name)
+            newset.pop("isFraud")
             newset.to_csv(file, header=None, index=False, mode="a")
+
+
+def delete_copied_columns(dataset: pd.DataFrame, new_fp: str):
+    with open(new_fp, mode="w") as file:
+        for chunk in dataset:
+            for column in COLS_FOR_DELETING:
+                newsubset = chunk.copy()
+                newsubset.pop(column)
+                newsubset.to_csv(file, index=False)
 
 
 def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
