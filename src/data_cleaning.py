@@ -9,6 +9,8 @@ import os
 # no rows train fraud - 14393 
 
 
+COLS_FOR_DELETING = ["V322", "V323", "V324", "V325", "V326", "V328", "V329", "V330", "V332", "V333", "V334", "V335", "V338", "V339"]
+
 def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
@@ -41,7 +43,7 @@ def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
 def number_of_rows(data_set: pd.DataFrame):
     records_number = 0
     for chunk in data_set:
-        records_number += chunk.shape[0]
+        records_number += int(chunk.shape[0])
     
     print(records_number)
     return records_number
@@ -128,6 +130,22 @@ def pop_column(dataset: pd.DataFrame, new_filepath: str):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
+def delete_copied_columns(dataset: pd.DataFrame, new_fp: str):
+    with open(new_fp, mode="w") as file:
+        for chunk in dataset:
+            newsubset = chunk.copy()
+            for column in COLS_FOR_DELETING:
+                newsubset.pop(column)
+            newsubset.to_csv(file, index=False)
+            break
+
+        for chunk in dataset:
+            newsubset = chunk.copy()
+            for column in COLS_FOR_DELETING:
+                newsubset.pop(column)
+            newsubset.to_csv(file, index=False, header=None, mode="a")
+
+
 def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
     with open(new_filepath, mode="w") as file:
         file.write("isFraud" + '\n')
@@ -137,23 +155,8 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
-    #save_series_from_iterator(train_itr, "data/traindataset/goal_train.csv")
-    #train_itr = pd.read_csv("data/traindataset/train.csv", chunksize=5_000)
-    #pop_column(train_itr, "data/traindataset/train1.csv")
-
-    vali_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    #save_series_from_iterator(vali_itr, "data/validatedataset/goal_validate.csv")
-    #vali_itr = pd.read_csv("data/validatedataset/validate.csv", chunksize=5_000)
-    #pop_column(vali_itr, "data/validatedataset/validate1.csv")
-
-    trainy = pd.read_csv("data/traindataset/goal_train.csv", chunksize=5_000)
-    validatey = pd.read_csv("data/validatedataset/goal_validate.csv", chunksize=5_000)
-
-    number_of_rows(train_itr)
-    number_of_rows(trainy)
-    number_of_rows(vali_itr)
-    number_of_rows(validatey)
+    train_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
+    delete_copied_columns(train_itr, "data/validatedataset/validate2.csv")
 
 
 if __name__ == "__main__":
