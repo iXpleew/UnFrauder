@@ -4,9 +4,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 
-FILE_PATH_TRAINX = "data/traindataset/train1.csv"
+FILE_PATH_TRAINX = "data/traindataset/train2.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/validate1.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/validate2.csv"
 FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
