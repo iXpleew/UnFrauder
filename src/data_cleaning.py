@@ -90,8 +90,10 @@ def show_uniques_everycolumn():
     skip: bool = True
 
     for column_name in column_names:
-        if column_name == "V339":
+        if column_name == "V300":
             skip = False
+        elif column_name == "V305":
+            skip = True
         elif skip:
             continue
 
@@ -155,8 +157,7 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    train_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
-    delete_copied_columns(train_itr, "data/validatedataset/validate2.csv")
+    show_uniques_everycolumn()
 
 
 if __name__ == "__main__":
