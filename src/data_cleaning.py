@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import os
+from train_model import build_dtypes
+
 
 # COMMENTS FOR FUTURE
 # commented code is meant for future methods that will be needed in analysis chapter
@@ -83,6 +85,14 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
     print(all_missing_values)
 
 
+def calculate_column_correlation():
+    dtypes = build_dtypes("data/traindataset/train.csv")
+    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes)
+    v_columns = pd.read_csv("data/traindataset/train.csv", nrows=0)
+    v_columns = [column for column in v_columns if "V" in column]
+    print(v_columns)
+
+
 def show_uniques_everycolumn():
     pd.set_option("display.max_rows", None)
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
@@ -90,8 +100,10 @@ def show_uniques_everycolumn():
     skip: bool = True
 
     for column_name in column_names:
-        if column_name == "V339":
+        if column_name == "V300":
             skip = False
+        elif column_name == "V305":
+            skip = True
         elif skip:
             continue
 
@@ -155,8 +167,7 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    train_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
-    delete_copied_columns(train_itr, "data/validatedataset/validate2.csv")
+    calculate_column_correlation()
 
 
 if __name__ == "__main__":
