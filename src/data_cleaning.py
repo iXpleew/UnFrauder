@@ -87,10 +87,14 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
 
 def calculate_column_correlation():
     dtypes = build_dtypes("data/traindataset/train.csv")
-    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes)
     v_columns = pd.read_csv("data/traindataset/train.csv", nrows=0)
     v_columns = [column for column in v_columns if "V" in column]
-    print(v_columns)
+    
+    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes, usecols=v_columns)
+    triangular_set = dataset.corr().to_numpy()
+    print(len(triangular_set))
+    iu = np.triu_indices(len(triangular_set), 1)
+    print(triangular_set[iu])
 
 
 def show_uniques_everycolumn():
