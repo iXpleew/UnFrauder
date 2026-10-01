@@ -91,10 +91,24 @@ def calculate_column_correlation():
     v_columns = [column for column in v_columns if "V" in column]
     
     dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes, usecols=v_columns)
-    triangular_set = dataset.corr().to_numpy()
+    return triangular_set = dataset.corr().to_numpy()
     print(len(triangular_set))
     iu = np.triu_indices(len(triangular_set), 1)
-    print(triangular_set[iu])
+    
+
+def save_correlated_columns(corr_table: np.ndarray)
+    table_lenght: int = len(corr_table)
+    iu = np.triu_indices(table_lenght, 1)
+    x_vcolumn: int = 2
+    y_vcolumn: int = 1
+    columns_to_delete = []
+    for correlation in corr_table[iu]:
+        if abs(correlation) >= 0.9:
+            columns_to_delete.append(f"V{x_vcolumn}")
+        if x_vcolumn == table_lenght:
+            x_vcolumn = y_vcolumn + 1
+            y_vcolumn += 1
+    return columns_to_delete
 
 
 def show_uniques_everycolumn():
