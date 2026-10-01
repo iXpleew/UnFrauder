@@ -91,24 +91,23 @@ def calculate_column_correlation():
     v_columns = [column for column in v_columns if "V" in column]
     
     dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes, usecols=v_columns)
-    return triangular_set = dataset.corr().to_numpy()
-    print(len(triangular_set))
-    iu = np.triu_indices(len(triangular_set), 1)
-    
+    return dataset.corr().to_numpy()
 
-def save_correlated_columns(corr_table: np.ndarray)
+
+def save_correlated_columns(corr_table: np.ndarray):
     table_lenght: int = len(corr_table)
     iu = np.triu_indices(table_lenght, 1)
     x_vcolumn: int = 2
     y_vcolumn: int = 1
     columns_to_delete = []
     for correlation in corr_table[iu]:
-        if abs(correlation) >= 0.9:
+        if abs(correlation) >= 0.925:
             columns_to_delete.append(f"V{x_vcolumn}")
         if x_vcolumn == table_lenght:
             x_vcolumn = y_vcolumn + 1
             y_vcolumn += 1
-    return columns_to_delete
+        x_vcolumn += 1
+    return set(columns_to_delete)
 
 
 def show_uniques_everycolumn():
@@ -160,18 +159,18 @@ def pop_column(dataset: pd.DataFrame, new_filepath: str):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
-def delete_copied_columns(dataset: pd.DataFrame, new_fp: str):
+def delete_copied_columns(dataset: pd.DataFrame, new_fp: str, columns_to_delete: list):
     with open(new_fp, mode="w") as file:
         for chunk in dataset:
             newsubset = chunk.copy()
-            for column in COLS_FOR_DELETING:
+            for column in columns_to_delete:
                 newsubset.pop(column)
             newsubset.to_csv(file, index=False)
             break
 
         for chunk in dataset:
             newsubset = chunk.copy()
-            for column in COLS_FOR_DELETING:
+            for column in columns_to_delete:
                 newsubset.pop(column)
             newsubset.to_csv(file, index=False, header=None, mode="a")
 
@@ -185,7 +184,14 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    calculate_column_correlation()
+    corr_table = calculate_column_correlation()
+    columns_to_delete = save_correlated_columns(corr_table)
+
+    train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
+    delete_copied_columns(train_itr, "data/traindataset/train3.csv", columns_to_delete)
+
+    validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
+    delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
 
 
 if __name__ == "__main__":
