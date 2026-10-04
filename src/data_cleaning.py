@@ -11,8 +11,6 @@ from train_model import build_dtypes
 # no rows train fraud - 14393 
 
 
-COLS_FOR_DELETING = ["V322", "V323", "V324", "V325", "V326", "V328", "V329", "V330", "V332", "V333", "V334", "V335", "V338", "V339"]
-
 def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
