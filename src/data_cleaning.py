@@ -11,8 +11,6 @@ from train_model import build_dtypes
 # no rows train fraud - 14393 
 
 
-COLS_FOR_DELETING = ["V322", "V323", "V324", "V325", "V326", "V328", "V329", "V330", "V332", "V333", "V334", "V335", "V338", "V339"]
-
 def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
@@ -87,10 +85,34 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
 
 def calculate_column_correlation():
     dtypes = build_dtypes("data/traindataset/train.csv")
-    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes)
     v_columns = pd.read_csv("data/traindataset/train.csv", nrows=0)
     v_columns = [column for column in v_columns if "V" in column]
-    print(v_columns)
+    
+    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes, usecols=v_columns)
+    return dataset.corr().to_numpy()
+
+
+def save_correlated_columns(corr_table: np.ndarray):
+    table_lenght: int = len(corr_table)
+    iu = np.triu_indices(table_lenght, 1)
+    x_vcolumn: int = 2
+    y_vcolumn: int = 1
+    columns_to_delete = []
+    for correlation in corr_table[iu]:
+        if abs(correlation) >= 0.925:
+            columns_to_delete.append(f"V{x_vcolumn}")
+        if x_vcolumn == table_lenght:
+            x_vcolumn = y_vcolumn + 1
+            y_vcolumn += 1
+        x_vcolumn += 1
+    return set(columns_to_delete)
+
+
+def show_first_records(dataset: pd.DataFrame):
+    pd.set_option("display.max_columns", None, "display.max_rows", None)
+    for chunk in dataset:
+        print(chunk.head())
+        break
 
 
 def show_uniques_everycolumn():
@@ -142,18 +164,18 @@ def pop_column(dataset: pd.DataFrame, new_filepath: str):
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
-def delete_copied_columns(dataset: pd.DataFrame, new_fp: str):
+def delete_copied_columns(dataset: pd.DataFrame, new_fp: str, columns_to_delete: list):
     with open(new_fp, mode="w") as file:
         for chunk in dataset:
             newsubset = chunk.copy()
-            for column in COLS_FOR_DELETING:
+            for column in columns_to_delete:
                 newsubset.pop(column)
             newsubset.to_csv(file, index=False)
             break
 
         for chunk in dataset:
             newsubset = chunk.copy()
-            for column in COLS_FOR_DELETING:
+            for column in columns_to_delete:
                 newsubset.pop(column)
             newsubset.to_csv(file, index=False, header=None, mode="a")
 
@@ -167,7 +189,14 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    calculate_column_correlation()
+    #corr_table = calculate_column_correlation()
+    #columns_to_delete = save_correlated_columns(corr_table)
+
+    train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
+    show_first_records(train_itr)
+
+    #validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
+    #delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
 
 
 if __name__ == "__main__":
