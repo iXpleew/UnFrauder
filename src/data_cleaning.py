@@ -108,6 +108,13 @@ def save_correlated_columns(corr_table: np.ndarray):
     return set(columns_to_delete)
 
 
+def show_first_records(dataset: pd.DataFrame):
+    pd.set_option("display.max_columns", None, "display.max_rows", None)
+    for chunk in dataset:
+        print(chunk.head())
+        break
+
+
 def show_uniques_everycolumn():
     pd.set_option("display.max_rows", None)
     column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
@@ -182,14 +189,14 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    corr_table = calculate_column_correlation()
-    columns_to_delete = save_correlated_columns(corr_table)
+    #corr_table = calculate_column_correlation()
+    #columns_to_delete = save_correlated_columns(corr_table)
 
     train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
-    delete_copied_columns(train_itr, "data/traindataset/train3.csv", columns_to_delete)
+    show_first_records(train_itr)
 
-    validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
-    delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
+    #validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
+    #delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
 
 
 if __name__ == "__main__":
