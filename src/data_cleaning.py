@@ -192,12 +192,14 @@ def main():
     #corr_table = calculate_column_correlation()
     #columns_to_delete = save_correlated_columns(corr_table)
 
-    train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
-    show_first_records(train_itr)
+    #train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
+    #show_first_records(train_itr)
 
     #validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
     #delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
 
+    identity_train = pd.read_csv("data/kaggle_dataset/train_identity.csv", chunksize=2_000)
+    number_of_rows(identity_train)
 
 if __name__ == "__main__":
     main()
