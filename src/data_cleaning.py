@@ -189,17 +189,16 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    #corr_table = calculate_column_correlation()
-    #columns_to_delete = save_correlated_columns(corr_table)
+    dtypes_transaction = build_dtypes("data/kaggle_dataset/train_transaction.csv")
+    dtypes_identity = build_dtypes("data/kaggle_dataset/train_identity.csv")
 
-    #train_itr = pd.read_csv("data/traindataset/train1.csv", chunksize=5_000)
-    #show_first_records(train_itr)
+    first_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", dtype=dtypes_transaction)
+    second_dataset = pd.read_csv("data/kaggle_dataset/train_identity.csv", dtype=dtypes_identity)
+    merged_df = first_set.merge(second_dataset, on="TransactionID", how="left")
 
-    #validate_itr = pd.read_csv("data/validatedataset/validate1.csv", chunksize=5_000)
-    #delete_copied_columns(validate_itr, "data/validatedataset/validate3.csv", columns_to_delete)
-
-    identity_train = pd.read_csv("data/kaggle_dataset/train_identity.csv", chunksize=2_000)
-    number_of_rows(identity_train)
+    pd.set_option("display.max_columns", None, "display.max_rows", None)
+    print(merged_df.head())
+    print(merged_df.shape)
 
 if __name__ == "__main__":
     main()
