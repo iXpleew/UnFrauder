@@ -15,16 +15,16 @@ def prepare_file(file_path: str):
     if os.path.isfile(file_path):
         os.remove(file_path)
     
-    header = pd.read_csv("data/kaggle_dataset/new_merged_set.csv", nrows=0)
+    header = pd.read_csv("data/kaggle_dataset/train_transaction.csv", nrows=0)
     header.to_csv(file_path, header=True, index=False)
 
 
 def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
     # split is 70/15/15
 
-    prepare_file("data/testdataset/new_test.csv")
-    prepare_file("data/validatedataset/new_validate.csv")
-    prepare_file("data/traindataset/new_train.csv")
+    prepare_file("data/testdataset/test.csv")
+    prepare_file("data/validatedataset/validate.csv")
+    prepare_file("data/traindataset/train.csv")
 
     validate_index: int = int(no_rows * 70/100)
     test_index: int = int(no_rows * 85/100)
@@ -189,10 +189,10 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def main():
-    new_dtypes = build_dtypes("data/kaggle_dataset/new_merged_set.csv")
-    new_set = pd.read_csv("data/kaggle_dataset/new_merged_set.csv", chunksize=5_000)
-    show_first_records(new_set)
-    #split_dataset(new_set, 590540)
+    old_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
+    rows_number = number_of_rows(old_set)
+    old_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
+    split_dataset(old_set, rows_number)
 
 
 if __name__ == "__main__":
