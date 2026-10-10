@@ -83,12 +83,12 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
     print(all_missing_values)
 
 
-def calculate_column_correlation():
-    dtypes = build_dtypes("data/traindataset/train.csv")
-    v_columns = pd.read_csv("data/traindataset/train.csv", nrows=0)
-    v_columns = [column for column in v_columns if "V" in column]
+def calculate_column_correlation(from_set_filepath: str):
+    dtypes = build_dtypes(from_set_filepath)
+    sus_columns = pd.read_csv(from_set_filepath, nrows=0)
+    sus_columns = [column for column in sus_columns if "V" in column]
     
-    dataset = pd.read_csv("data/traindataset/train.csv", dtype=dtypes, usecols=v_columns)
+    dataset = pd.read_csv(from_set_filepath, dtype=dtypes, usecols=sus_columns)
     return dataset.corr().to_numpy()
 
 
@@ -190,18 +190,21 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 def check_value_counts_of_column(file_path: str):
     column_names = list(pd.read_csv(file_path, nrows=0))
-    itr_set = pd.read_csv(file_path, chunksize=5_000)
+    itr_set = pd.read_csv(file_path, chunksize=5_000, dtype=build_dtypes(file_path))
     values_list = []
     for chunk in itr_set:
-        values_list.append(chunk[column_names[420]].value_counts())
+        values_list.append(chunk[column_names[423]].value_counts())
     final_value_set = pd.concat(values_list).groupby(level=0).sum()
     print(final_value_set)
 
 
 def main():
-    #train_dtypes = build_dtypes("data/traindataset/new_train.csv")
-    check_value_counts_of_column("data/traindataset/new_train.csv")
+    corr_table = calculate_column_correlation("data/traindataset/new_train1.csv")
+    cols_deletion = save_correlated_columns(corr_table)
+    delete_copied_columns(pd.read_csv("data/traindataset/new_train1.csv", chunksize=5_000), "data/traindataset/new_train2.csv", cols_deletion)
+    
 
-
+    delete_copied_columns(pd.read_csv("data/validatedataset/new_validate1.csv", chunksize=5_000), "data/validatedataset/new_validate2.csv", cols_deletion)
+    
 if __name__ == "__main__":
     main()

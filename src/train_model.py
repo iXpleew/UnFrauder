@@ -4,9 +4,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 
-FILE_PATH_TRAINX = "data/traindataset/new_train4.csv"
+FILE_PATH_TRAINX = "data/traindataset/new_train2.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/new_validate4.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/new_validate2.csv"
 FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
@@ -26,6 +26,9 @@ def build_dtypes(file_path: str):
         for column in column_names:
             series = chunk[column]
 
+            if column in dtype_dict and dtype_dict[column] == "category":
+                continue
+
             if series.dtype == "object":
                 dtype_dict[column] = "category"
                 continue
@@ -42,7 +45,7 @@ def build_dtypes(file_path: str):
                 global_maxs[column] = max(global_maxs.get(column, float('-inf')), chunk_max)
 
     for column, col_min in global_mins.items():
-        if dtype_dict.get(column) == "float32":
+        if dtype_dict.get(column) == "float32" or dtype_dict.get(column) == "category":
             continue
         col_max = global_maxs[column]
 
@@ -62,6 +65,8 @@ def create_light_sets():
     dtypes_dict = build_dtypes(FILE_PATH_TRAINX)
     trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
     validatesetX = pd.read_csv(FILE_PATH_VALIDATEX, dtype=dtypes_dict)
+    for category_dtype_column in trainsetX.select_dtypes(include=["category"]):
+        validatesetX[category_dtype_column] = validatesetX[category_dtype_column].astype(trainsetX[category_dtype_column].dtype)
 
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
@@ -80,6 +85,9 @@ def main():
     bst = XGBClassifier(enable_categorical=True)
     bst.fit(trainX, trainY)
     preds = bst.predict_proba(testX)[:, 1]
+    #print(len(preds))
+    #print(len(testY))
+    #exit()
     print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
 
 
