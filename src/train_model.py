@@ -4,9 +4,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 
-FILE_PATH_TRAINX = "data/traindataset/train3.csv"
+FILE_PATH_TRAINX = "data/traindataset/new_train4.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/validate3.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/new_validate4.csv"
 FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
@@ -63,7 +63,6 @@ def create_light_sets():
     trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
     validatesetX = pd.read_csv(FILE_PATH_VALIDATEX, dtype=dtypes_dict)
 
-    dtypes_dict = build_dtypes(FILE_PATH_TRAINY)
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
 

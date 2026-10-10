@@ -150,17 +150,17 @@ def show_nans_everycolumnkk():
         # print(based_uniqes)
 
 
-def pop_column(dataset: pd.DataFrame, new_filepath: str):
+def pop_column(dataset: pd.DataFrame, new_filepath: str, popped_column: str = "isFraud"):
     with open(new_filepath, mode="w") as file:
         for chunk in dataset:
             newset = chunk.copy()
-            newset.pop("isFraud")
+            newset.pop(popped_column)
             newset.to_csv(file, index=False)
             break
 
         for chunk in dataset:
             newset = chunk.copy()
-            newset.pop("isFraud")
+            newset.pop(popped_column)
             newset.to_csv(file, header=None, index=False, mode="a")
 
 
@@ -188,17 +188,20 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
             goal_column.to_csv(file, index=False, header=None)
 
 
+def check_value_counts_of_column(file_path: str):
+    column_names = list(pd.read_csv(file_path, nrows=0))
+    itr_set = pd.read_csv(file_path, chunksize=5_000)
+    values_list = []
+    for chunk in itr_set:
+        values_list.append(chunk[column_names[420]].value_counts())
+    final_value_set = pd.concat(values_list).groupby(level=0).sum()
+    print(final_value_set)
+
+
 def main():
-    dtypes_transaction = build_dtypes("data/kaggle_dataset/train_transaction.csv")
-    dtypes_identity = build_dtypes("data/kaggle_dataset/train_identity.csv")
+    #train_dtypes = build_dtypes("data/traindataset/new_train.csv")
+    check_value_counts_of_column("data/traindataset/new_train.csv")
 
-    first_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", dtype=dtypes_transaction)
-    second_dataset = pd.read_csv("data/kaggle_dataset/train_identity.csv", dtype=dtypes_identity)
-    merged_df = first_set.merge(second_dataset, on="TransactionID", how="left")
-
-    pd.set_option("display.max_columns", None, "display.max_rows", None)
-    print(merged_df.head())
-    print(merged_df.shape)
 
 if __name__ == "__main__":
     main()
