@@ -188,11 +188,23 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
             goal_column.to_csv(file, index=False, header=None)
 
 
+def check_value_counts_of_column(file_path: str):
+    column_names = pd.read_csv(file_path, nrows=0)
+    itr_set = pd.read_csv(file_path, chunksize=5_000)
+    value_counts_dataframe = pd.DataFrame
+    for chunk in itr_set:
+        value_counts_dataframe += chunk[column_names[415]]
+    print(value_counts_dataframe)
+
+
 def main():
-    old_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    rows_number = number_of_rows(old_set)
-    old_set = pd.read_csv("data/kaggle_dataset/train_transaction.csv", chunksize=5_000)
-    split_dataset(old_set, rows_number)
+    #train_dtypes = build_dtypes("data/traindataset/new_train.csv")
+    train_dataset = pd.read_csv("data/traindataset/new_train.csv", chunksize=5_000)
+    pop_column(train_dataset, "data/traindataset/new_train4.csv")
+
+    validate_dataset = pd.read_csv("data/validatedataset/new_validate.csv", chunksize=5_000)
+    pop_column(validate_dataset, "data/validatedataset/new_validate4.csv")
+
 
 
 if __name__ == "__main__":
