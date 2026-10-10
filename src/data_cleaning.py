@@ -189,22 +189,18 @@ def save_series_from_iterator(dataset: pd.DataFrame, new_filepath: str):
 
 
 def check_value_counts_of_column(file_path: str):
-    column_names = pd.read_csv(file_path, nrows=0)
+    column_names = list(pd.read_csv(file_path, nrows=0))
     itr_set = pd.read_csv(file_path, chunksize=5_000)
-    value_counts_dataframe = pd.DataFrame
+    values_list = []
     for chunk in itr_set:
-        value_counts_dataframe += chunk[column_names[415]]
-    print(value_counts_dataframe)
+        values_list.append(chunk[column_names[420]].value_counts())
+    final_value_set = pd.concat(values_list).groupby(level=0).sum()
+    print(final_value_set)
 
 
 def main():
     #train_dtypes = build_dtypes("data/traindataset/new_train.csv")
-    train_dataset = pd.read_csv("data/traindataset/new_train.csv", chunksize=5_000)
-    pop_column(train_dataset, "data/traindataset/new_train4.csv")
-
-    validate_dataset = pd.read_csv("data/validatedataset/new_validate.csv", chunksize=5_000)
-    pop_column(validate_dataset, "data/validatedataset/new_validate4.csv")
-
+    check_value_counts_of_column("data/traindataset/new_train.csv")
 
 
 if __name__ == "__main__":
