@@ -19,9 +19,7 @@ def prepare_file(file_path: str):
     header.to_csv(file_path, header=True, index=False)
 
 
-def split_dataset(dataset_itr: pd.DataFrame, no_rows: int):
-    # split is 70/15/15
-
+def split_dataset(dataset_itr: pd.DataFrame, no_rows: int = 590540):
     prepare_file("data/testdataset/test.csv")
     prepare_file("data/validatedataset/validate.csv")
     prepare_file("data/traindataset/train.csv")
@@ -83,7 +81,7 @@ def show_nans_impact_fraud(data_set: pd.DataFrame):
     print(all_missing_values)
 
 
-def calculate_column_correlation(from_set_filepath: str):
+def calculate_vcolumn_correlation(from_set_filepath: str):
     dtypes = build_dtypes(from_set_filepath)
     sus_columns = pd.read_csv(from_set_filepath, nrows=0)
     sus_columns = [column for column in sus_columns if "V" in column]
@@ -136,18 +134,6 @@ def show_uniques_everycolumn():
         uniq_values = pd.concat([column, frauds_column], axis=1)
         based_uniqes = uniq_values.groupby(by=uniq_values["isFraud"]).value_counts()
         print(based_uniqes)
-
-
-def show_nans_everycolumnkk():
-    column_names = pd.read_csv("data/traindataset/train.csv", nrows=0)
-    frauds_column = pd.read_csv("data/traindataset/train.csv", usecols=["isFraud"])
-    for column_name in column_names:
-        if column_name == "isFraud":
-            continue
-        column = pd.read_csv("data/traindataset/train.csv", skipinitialspace=True, usecols=[column_name])
-        column_with_fraud = pd.concat([frauds_column, column], axis=1)
-        based_uniqes = column_with_fraud.isna().groupby(by=column_with_fraud["isFraud"]).sum()
-        # print(based_uniqes)
 
 
 def pop_column(dataset: pd.DataFrame, new_filepath: str, popped_column: str = "isFraud"):
@@ -218,7 +204,7 @@ def main():
     pop_column(dataset, "data/testdataset/new_test1.csv")
     dataset = pd.read_csv("data/testdataset/new_test1.csv", dtype=dtypes_dict, chunksize=5_000)
 
-    cols_to_delete = save_correlated_columns(calculate_column_correlation("data/traindataset/new_train.csv"))
+    cols_to_delete = save_correlated_columns(calculate_vcolumn_correlation("data/traindataset/new_train.csv"))
     delete_copied_columns(dataset, "data/testdataset/new_test2.csv", cols_to_delete)
     dataset = pd.read_csv("data/testdataset/new_test2.csv", dtype=dtypes_dict, chunksize=5_000)
     drop_pointless_columns("data/testdataset/new_test2.csv", dtypes_dict, "data/testdataset/new_test3.csv")
