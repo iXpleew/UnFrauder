@@ -1,6 +1,25 @@
+import pandas as pd
+import numpy as np
+
 def create_lack_info_column(dataset: pd.DataFrame):
     new_column = dataset.isnull().sum(axis=1).to_list()
     dataset["number_of_nulls"] = new_column
+    return dataset
+
+
+def add_time_columns(dataset: pd.DataFrame):
+    seconds_passed = dataset["TransactionDT"]
+    hour_column = seconds_passed // 3600 % 24
+    dataset["hour"] = hour_column
+    weekday_column = seconds_passed // 86400 % 7
+    dataset["weekday"] = weekday_column
+    return dataset
+
+
+def apply_feature_engineering(dataset: pd.DataFrame):
+    dataset = add_time_columns(dataset)
+    dataset = create_lack_info_column(dataset)
+    return dataset
 
 
 def build_dtypes(file_path: str):

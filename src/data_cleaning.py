@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import os
-from train_model import build_dtypes
 from feature import *
 
 
@@ -212,8 +211,17 @@ def drop_pointless_columns(filename: str, dtypes_dict: dict, file_to_save: str):
 
 def main():
     dtypes_dict = build_dtypes("data/traindataset/new_train.csv")
-    dataset = pd.read_csv("data/traindataset/new_train3.csv", dtype=dtypes_dict)
-    create_lack_info_column(dataset)
+
+    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
+    save_series_from_iterator(dataset, "data/testdataset/goal_test.csv")
+    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
+    pop_column(dataset, "data/testdataset/new_test1.csv")
+    dataset = pd.read_csv("data/testdataset/new_test1.csv", dtype=dtypes_dict, chunksize=5_000)
+
+    cols_to_delete = save_correlated_columns(calculate_column_correlation("data/traindataset/new_train.csv"))
+    delete_copied_columns(dataset, "data/testdataset/new_test2.csv", cols_to_delete)
+    dataset = pd.read_csv("data/testdataset/new_test2.csv", dtype=dtypes_dict, chunksize=5_000)
+    drop_pointless_columns("data/testdataset/new_test2.csv", dtypes_dict, "data/testdataset/new_test3.csv")
 
 
 if __name__ == "__main__":

@@ -7,8 +7,8 @@ from feature import *
 
 FILE_PATH_TRAINX = "data/traindataset/new_train3.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/new_validate3.csv"
-FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
+FILE_PATH_VALIDATEX = "data/testdataset/new_test3.csv"
+FILE_PATH_VALIDATEY = "data/testdataset/goal_test.csv"
 
 
 def set_model_option():
@@ -24,15 +24,15 @@ def create_light_sets():
     for category_dtype_column in trainsetX.select_dtypes(include=["category"]):
         validatesetX[category_dtype_column] = validatesetX[category_dtype_column].astype(trainsetX[category_dtype_column].dtype)
 
+    #trainsetX = apply_feature_engineering(trainsetX)
+    #validatesetX = apply_feature_engineering(validatesetX)
+    
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
-
     return trainsetX, validatesetX, trainsetY, validatesetY
 
 
 def evaluate_model(predictions: np.array, real_results: np.array):
-    #precision, recall, thresholds = precision_recall_curve(real_results, predictions)
-    #auc_score = roc_auc_score(recall, precision)
     return roc_auc_score(real_results, predictions)
 
 
