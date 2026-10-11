@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 from train_model import build_dtypes
+from feature import *
 
 
 # COMMENTS FOR FUTURE
@@ -211,8 +212,9 @@ def drop_pointless_columns(filename: str, dtypes_dict: dict, file_to_save: str):
 
 def main():
     dtypes_dict = build_dtypes("data/traindataset/new_train.csv")
-    drop_pointless_columns("data/traindataset/new_train2.csv", dtypes_dict, "data/traindataset/new_train3.csv")
-    drop_pointless_columns("data/validatedataset/new_validate2.csv", dtypes_dict, "data/validatedataset/new_validate3.csv")
+    dataset = pd.read_csv("data/traindataset/new_train3.csv", dtype=dtypes_dict)
+    create_lack_info_column(dataset)
+
 
 if __name__ == "__main__":
     main()
