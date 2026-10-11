@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def create_lack_info_column(dataset: pd.DataFrame):
     new_column = dataset.isnull().sum(axis=1).to_list()
     dataset["number_of_nulls"] = new_column

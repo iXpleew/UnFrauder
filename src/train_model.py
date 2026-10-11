@@ -11,21 +11,12 @@ FILE_PATH_VALIDATEX = "data/testdataset/new_test3.csv"
 FILE_PATH_VALIDATEY = "data/testdataset/goal_test.csv"
 
 
-def set_model_option():
-    pd.set_option("display.max_columns", None)
-    param = {"eval_metric": "auc"}
-    return param
-
-
 def create_light_sets():
     dtypes_dict = build_dtypes(FILE_PATH_TRAINX)
     trainsetX = pd.read_csv(FILE_PATH_TRAINX, dtype=dtypes_dict)
     validatesetX = pd.read_csv(FILE_PATH_VALIDATEX, dtype=dtypes_dict)
     for category_dtype_column in trainsetX.select_dtypes(include=["category"]):
         validatesetX[category_dtype_column] = validatesetX[category_dtype_column].astype(trainsetX[category_dtype_column].dtype)
-
-    #trainsetX = apply_feature_engineering(trainsetX)
-    #validatesetX = apply_feature_engineering(validatesetX)
     
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
@@ -39,8 +30,6 @@ def evaluate_model(predictions: np.array, real_results: np.array):
 def main():
     trainX, testX, trainY, testY = create_light_sets()
     bst = XGBClassifier(enable_categorical=True, n_estimators=350, learning_rate=0.3)
-    #trainX.set_index("TransactionID", inplace=True)
-    #testX.set_index("TransactionID", inplace=True)
     bst.fit(trainX, trainY)
     preds = bst.predict_proba(testX)[:, 1]
     print(f"Model roc-auc is {evaluate_model(np.array(preds), np.array(testY))}")
