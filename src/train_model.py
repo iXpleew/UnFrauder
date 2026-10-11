@@ -4,9 +4,9 @@ from xgboost import XGBClassifier
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 
 
-FILE_PATH_TRAINX = "data/traindataset/new_train2.csv"
+FILE_PATH_TRAINX = "data/traindataset/new_train3.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/new_validate2.csv"
+FILE_PATH_VALIDATEX = "data/validatedataset/new_validate3.csv"
 FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
 
 
@@ -82,13 +82,12 @@ def evaluate_model(predictions: np.array, real_results: np.array):
 
 def main():
     trainX, testX, trainY, testY = create_light_sets()
-    bst = XGBClassifier(enable_categorical=True)
+    bst = XGBClassifier(enable_categorical=True, n_estimators=350, learning_rate=0.3)
+    #trainX.set_index("TransactionID", inplace=True)
+    #testX.set_index("TransactionID", inplace=True)
     bst.fit(trainX, trainY)
     preds = bst.predict_proba(testX)[:, 1]
-    #print(len(preds))
-    #print(len(testY))
-    #exit()
-    print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
+    print(f"Model roc-auc is {evaluate_model(np.array(preds), np.array(testY))}")
 
 
 if __name__ == "__main__":
