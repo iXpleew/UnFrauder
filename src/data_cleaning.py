@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from train_model import build_dtypes
+from feature import *
 
 
 # COMMENTS FOR FUTURE
@@ -198,13 +198,31 @@ def check_value_counts_of_column(file_path: str):
     print(final_value_set)
 
 
-def main():
-    corr_table = calculate_column_correlation("data/traindataset/new_train1.csv")
-    cols_deletion = save_correlated_columns(corr_table)
-    delete_copied_columns(pd.read_csv("data/traindataset/new_train1.csv", chunksize=5_000), "data/traindataset/new_train2.csv", cols_deletion)
-    
+def drop_pointless_columns(filename: str, dtypes_dict: dict, file_to_save: str):
+    dataframe = pd.read_csv(filename, dtype=dtypes_dict)
+    column_names = list(pd.read_csv(filename, nrows=0))
+    columns = [column for column in column_names if "id_" in column and "id_0" not in column]
+    for column in columns:
+        dataframe.pop(column)
+    dataframe.pop("DeviceInfo")
+    dataframe.pop("DeviceType")
+    dataframe.to_csv(file_to_save, index=False)
 
-    delete_copied_columns(pd.read_csv("data/validatedataset/new_validate1.csv", chunksize=5_000), "data/validatedataset/new_validate2.csv", cols_deletion)
-    
+
+def main():
+    dtypes_dict = build_dtypes("data/traindataset/new_train.csv")
+
+    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
+    save_series_from_iterator(dataset, "data/testdataset/goal_test.csv")
+    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
+    pop_column(dataset, "data/testdataset/new_test1.csv")
+    dataset = pd.read_csv("data/testdataset/new_test1.csv", dtype=dtypes_dict, chunksize=5_000)
+
+    cols_to_delete = save_correlated_columns(calculate_column_correlation("data/traindataset/new_train.csv"))
+    delete_copied_columns(dataset, "data/testdataset/new_test2.csv", cols_to_delete)
+    dataset = pd.read_csv("data/testdataset/new_test2.csv", dtype=dtypes_dict, chunksize=5_000)
+    drop_pointless_columns("data/testdataset/new_test2.csv", dtypes_dict, "data/testdataset/new_test3.csv")
+
+
 if __name__ == "__main__":
     main()

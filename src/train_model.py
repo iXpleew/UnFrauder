@@ -2,63 +2,19 @@ import pandas as pd
 import numpy as np
 from xgboost import XGBClassifier
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
+from feature import *
 
 
-FILE_PATH_TRAINX = "data/traindataset/new_train2.csv"
+FILE_PATH_TRAINX = "data/traindataset/new_train3.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/validatedataset/new_validate2.csv"
-FILE_PATH_VALIDATEY = "data/validatedataset/goal_validate.csv"
+FILE_PATH_VALIDATEX = "data/testdataset/new_test3.csv"
+FILE_PATH_VALIDATEY = "data/testdataset/goal_test.csv"
 
 
 def set_model_option():
     pd.set_option("display.max_columns", None)
     param = {"eval_metric": "auc"}
     return param
-
-
-def build_dtypes(file_path: str):
-    column_names = pd.read_csv(file_path, nrows=0).columns.to_list()
-    dtype_dict = {}
-    global_mins = {}
-    global_maxs = {}
-
-    for chunk in pd.read_csv(file_path, chunksize=5_000):
-        for column in column_names:
-            series = chunk[column]
-
-            if column in dtype_dict and dtype_dict[column] == "category":
-                continue
-
-            if series.dtype == "object":
-                dtype_dict[column] = "category"
-                continue
-            elif pd.api.types.is_float_dtype(series):
-                dtype_dict[column] = "float32"
-                continue
-            elif pd.api.types.is_integer_dtype(series):
-                if dtype_dict.get(column) == "float32":
-                    continue
-                chunk_min = series.min()
-                chunk_max = series.max()
-
-                global_mins[column] = min(global_mins.get(column, float('inf')), chunk_min)
-                global_maxs[column] = max(global_maxs.get(column, float('-inf')), chunk_max)
-
-    for column, col_min in global_mins.items():
-        if dtype_dict.get(column) == "float32" or dtype_dict.get(column) == "category":
-            continue
-        col_max = global_maxs[column]
-
-        if col_min >= np.iinfo(np.int8).min and col_max <= np.iinfo(np.int8).max:
-            dtype_dict[column] = "int8"
-        elif col_min >= np.iinfo(np.int16).min and col_max <= np.iinfo(np.int16).max:
-            dtype_dict[column] = "int16"
-        elif col_min >= np.iinfo(np.int32).min and col_max <= np.iinfo(np.int32).max:
-            dtype_dict[column] = "int32"
-        else:
-            dtype_dict[column] = "int64"
-
-    return dtype_dict
 
 
 def create_light_sets():
@@ -68,27 +24,26 @@ def create_light_sets():
     for category_dtype_column in trainsetX.select_dtypes(include=["category"]):
         validatesetX[category_dtype_column] = validatesetX[category_dtype_column].astype(trainsetX[category_dtype_column].dtype)
 
+    #trainsetX = apply_feature_engineering(trainsetX)
+    #validatesetX = apply_feature_engineering(validatesetX)
+    
     trainsetY = pd.read_csv(FILE_PATH_TRAINY, dtype=dtypes_dict)
     validatesetY = pd.read_csv(FILE_PATH_VALIDATEY, dtype=dtypes_dict)
-
     return trainsetX, validatesetX, trainsetY, validatesetY
 
 
 def evaluate_model(predictions: np.array, real_results: np.array):
-    #precision, recall, thresholds = precision_recall_curve(real_results, predictions)
-    #auc_score = roc_auc_score(recall, precision)
     return roc_auc_score(real_results, predictions)
 
 
 def main():
     trainX, testX, trainY, testY = create_light_sets()
-    bst = XGBClassifier(enable_categorical=True)
+    bst = XGBClassifier(enable_categorical=True, n_estimators=350, learning_rate=0.3)
+    #trainX.set_index("TransactionID", inplace=True)
+    #testX.set_index("TransactionID", inplace=True)
     bst.fit(trainX, trainY)
     preds = bst.predict_proba(testX)[:, 1]
-    #print(len(preds))
-    #print(len(testY))
-    #exit()
-    print(f"Model acc is {evaluate_model(np.array(preds), np.array(testY))}")
+    print(f"Model roc-auc is {evaluate_model(np.array(preds), np.array(testY))}")
 
 
 if __name__ == "__main__":
