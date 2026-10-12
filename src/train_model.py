@@ -5,10 +5,10 @@ from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 from feature import *
 
 
-FILE_PATH_TRAINX = "data/traindataset/new_train3.csv"
+FILE_PATH_TRAINX = "data/traindataset/new_train.csv"
 FILE_PATH_TRAINY = "data/traindataset/goal_train.csv"
-FILE_PATH_VALIDATEX = "data/testdataset/new_test3.csv"
-FILE_PATH_VALIDATEY = "data/testdataset/goal_test.csv"
+FILE_PATH_TESTX = "data/testdataset/new_test.csv"
+FILE_PATH_TESTY = "data/testdataset/goal_test.csv"
 
 
 def create_light_sets():
