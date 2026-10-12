@@ -196,19 +196,35 @@ def drop_pointless_columns(filename: str, dtypes_dict: dict, file_to_save: str):
 
 
 def main():
+    transaction_dtypes = build_dtypes("data/kaggle_dataset/train_transaction.csv")
+    identity_dtypes = build_dtypes("data/kaggle_dataset/train_identity.csv")
+    transaction = pd.read_csv("data/kaggle_dataset/train_transaction.csv", dtype=transaction_dtypes)
+    identity = pd.read_csv("data/kaggle_dataset/train_identity.csv", dtype=identity_dtypes)
+    merged = transaction.merge(identity, on="TransactionID", how="left")
+    merged.to_csv("data/kaggle_dataset/merged.csv", index=False)
+    del transaction, identity, merged
+
+    split_dataset(pd.read_csv("data/kaggle_dataset/merged.csv", chunksize=5_000))
+
     dtypes_dict = build_dtypes("data/traindataset/new_train.csv")
+    cols_to_delete = save_correlated_columns(
+        calculate_vcolumn_correlation("data/traindataset/new_train.csv"))
 
-    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
-    save_series_from_iterator(dataset, "data/testdataset/goal_test.csv")
-    dataset = pd.read_csv("data/testdataset/new_test.csv", dtype=dtypes_dict, chunksize=5_000)
-    pop_column(dataset, "data/testdataset/new_test1.csv")
-    dataset = pd.read_csv("data/testdataset/new_test1.csv", dtype=dtypes_dict, chunksize=5_000)
+    sets = [
+        ("data/traindataset/", "new_train", "goal_train"),
+        ("data/testdataset/", "new_test", "goal_test"),
+    ]
+    for folder, name, goal_name in sets:
+        itr = pd.read_csv(f"{folder}{name}.csv", dtype=dtypes_dict, chunksize=5_000)
+        save_series_from_iterator(itr, f"{folder}{goal_name}.csv")
 
-    cols_to_delete = save_correlated_columns(calculate_vcolumn_correlation("data/traindataset/new_train.csv"))
-    delete_copied_columns(dataset, "data/testdataset/new_test2.csv", cols_to_delete)
-    dataset = pd.read_csv("data/testdataset/new_test2.csv", dtype=dtypes_dict, chunksize=5_000)
-    drop_pointless_columns("data/testdataset/new_test2.csv", dtypes_dict, "data/testdataset/new_test3.csv")
+        itr = pd.read_csv(f"{folder}{name}.csv", dtype=dtypes_dict, chunksize=5_000)
+        pop_column(itr, f"{folder}{name}1.csv")
 
+        itr = pd.read_csv(f"{folder}{name}1.csv", dtype=dtypes_dict, chunksize=5_000)
+        delete_copied_columns(itr, f"{folder}{name}2.csv", cols_to_delete)
+
+        drop_pointless_columns(f"{folder}{name}2.csv", dtypes_dict, f"{folder}{name}3.csv")
 
 if __name__ == "__main__":
     main()
